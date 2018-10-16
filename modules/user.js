@@ -1,5 +1,4 @@
 let moment = require('moment');
-let async = require("async");
 let uniqid = require("uniqid");
 const { sendMail } = require('./util');
 
@@ -42,7 +41,7 @@ exports.updatePassword = function (token, newPass) {
                         });
                     } else {
                         // Delete token after password reset.
-                        let query2 = "UPDATE user SET token = NULL, token_timestamp = NULL WHERE token = ?";
+                        let query2 = "UPDATE user SET token = NULL WHERE token = ?";
                         global.mysqlDb.query(query2, [token], function (error, results) {
                             if (error) reject(error);
     
@@ -62,7 +61,6 @@ exports.updatePassword = function (token, newPass) {
         }
     })
 }
-
 
 exports.sendResetLink = function (emailId) {
     return new Promise(async (resolve, reject) => {
@@ -114,3 +112,52 @@ exports.sendResetLink = function (emailId) {
         }
     })
 }
+
+exports.getUserById = async function(id){
+    return new Promise((resolve, reject) => {
+        try {
+            var query = "select firstName, lastName, email, mobile from user where id = ?";
+            global.mysqlDb.query(query, [id], function (error, results) {
+                if (error) reject(error);
+
+                if (results.length > 0) {
+                    resolve({
+                        success: true,
+                        data: results[0]
+                    })
+                    return;
+                } else {
+                    resolve({
+                        success: false,
+                        message: "No user exists."
+                    })
+                    return;
+                }
+            });
+        } catch(error) {
+            console.error(error);
+            reject(error)
+        }
+    })
+}
+
+exports.updateUserById = async function(id, firstName, lastName, email, mobile){
+    return new Promise((resolve, reject) => {
+        try {
+            var query = "UPDATE user SET firstName = ?, lastName = ?, email = ?, mobile where id = ?";
+            global.mysqlDb.query(query, [id, firstName, lastName, email, mobile], function (error, results) {
+                if (error) reject(error);
+        
+                resolve({
+                    success: true
+                })
+        
+            });
+        } catch(error) {
+            console.error(error);
+            reject(error)
+        }
+    })
+}
+
+// jipearlpavbwievc

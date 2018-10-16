@@ -13,7 +13,13 @@ module.exports = function (router) {
   // Auth controllers
   require("./controllers/auth.api")(router);
 
-  // feed controllers
-  require("./controllers/feed.api")(router);
+  // user controllers
+  require("./controllers/user.api")(router);
+
+  // article controllers
+  require("./controllers/article.api")(router);
+
+  // comment controllers
+  require("./controllers/comment.api")(router);
 
 }
